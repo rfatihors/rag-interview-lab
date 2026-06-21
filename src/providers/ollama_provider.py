@@ -13,10 +13,14 @@ class OllamaProvider(BaseLLMProvider):
         base_url: str,
         chat_model: str,
         embed_model: str,
+        timeout: int = 600,
+        num_predict: int = 256,
     ):
         self.base_url = base_url.rstrip("/")
         self.chat_model = chat_model
         self.embed_model = embed_model
+        self.timeout = timeout
+        self.num_predict = num_predict
 
     def get_embeddings(self, texts: list[str]) -> list[list[float]]:
         if not texts:
@@ -28,7 +32,7 @@ class OllamaProvider(BaseLLMProvider):
                 "model": self.embed_model,
                 "input": texts,
             },
-            timeout=120,
+            timeout=self.timeout,
         )
         response.raise_for_status()
 
@@ -49,8 +53,10 @@ class OllamaProvider(BaseLLMProvider):
             "model": self.chat_model,
             "prompt": prompt,
             "stream": False,
+            "keep_alive": "10m",
             "options": {
                 "temperature": 0.1,
+                "num_predict": self.num_predict,
             },
         }
 
@@ -60,7 +66,7 @@ class OllamaProvider(BaseLLMProvider):
         response = requests.post(
             f"{self.base_url}/api/generate",
             json=payload,
-            timeout=180,
+            timeout=self.timeout,
         )
         response.raise_for_status()
 

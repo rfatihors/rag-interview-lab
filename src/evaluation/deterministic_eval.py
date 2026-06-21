@@ -40,16 +40,22 @@ def run_eval():
     print(pipeline.ingest(recreate=True))
 
     cases = json.loads(EVAL_PATH.read_text(encoding="utf-8"))
-
     results = []
 
     for case in cases:
         start = perf_counter()
-        output = pipeline.ask(case["question"])
-        latency = perf_counter() - start
+        error = None
 
-        answer = output["answer"]
-        sources = output["sources"]
+        try:
+            output = pipeline.ask(case["question"])
+            answer = output["answer"]
+            sources = output["sources"]
+        except Exception as exc:
+            answer = ""
+            sources = []
+            error = f"{type(exc).__name__}: {exc}"
+
+        latency = perf_counter() - start
 
         checks = {
             "source_hit": source_hit(sources, case["expected_sources"]),
@@ -57,7 +63,7 @@ def run_eval():
             "must_not_contain": contains_none(answer, case["must_not_contain"]),
         }
 
-        passed = all(checks.values())
+        passed = all(checks.values()) and error is None
 
         results.append(
             {
@@ -66,8 +72,15 @@ def run_eval():
                 "passed": passed,
                 "latency_sec": round(latency, 3),
                 "checks": checks,
+                "error": error,
                 "answer": answer,
-                "sources": [source.get("source") for source in sources],
+                "sources": [
+                    {
+                        "source": source.get("source"),
+                        "score": round(source.get("score", 0), 4),
+                    }
+                    for source in sources
+                ],
             }
         )
 

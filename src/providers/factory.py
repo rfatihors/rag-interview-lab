@@ -1,8 +1,8 @@
 from src.config import settings
 from src.core.interfaces import BaseLLMProvider
 from src.providers.mock_provider import MockProvider
-from src.providers.openai_provider import OpenAIProvider
 from src.providers.ollama_provider import OllamaProvider
+from src.providers.openai_provider import OpenAIProvider
 
 
 def build_provider() -> BaseLLMProvider:
@@ -23,6 +23,8 @@ def build_provider() -> BaseLLMProvider:
             base_url=settings.ollama_base_url,
             chat_model=settings.ollama_chat_model,
             embed_model=settings.ollama_embed_model,
+            timeout=settings.ollama_timeout,
+            num_predict=settings.ollama_num_predict,
         )
 
     raise ValueError(f"Desteklenmeyen LLM_PROVIDER: {settings.llm_provider}")

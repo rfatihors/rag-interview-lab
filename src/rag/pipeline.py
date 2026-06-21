@@ -53,6 +53,32 @@ class RAGPipeline:
             "vector_size": vector_size,
         }
 
+    def _extractive_fallback(self, contexts: list[dict[str, Any]]) -> str:
+        """
+        LLM boş cevap dönerse retrieved context'lerden güvenli, kaynaklı fallback üretir.
+        Bu yaratıcı cevap değildir; kaynak metinleri kullanıcıya kontrollü şekilde taşır.
+        """
+        if not contexts:
+            return "Dokümanda bu bilgi bulunamadı."
+
+        lines = [
+            "LLM yanıtı boş döndüğü için kaynaklardan doğrudan çıkarılan bilgi aşağıdadır:"
+        ]
+
+        for item in contexts:
+            source = item.get("source", "unknown")
+            text = item.get("text", "").strip()
+
+            if not text:
+                continue
+
+            lines.append(f"- Kaynak: {source} | Bilgi: {text[:500]}")
+
+        if len(lines) == 1:
+            return "Dokümanda bu bilgi bulunamadı."
+
+        return "\n".join(lines)
+
     def ask(
         self,
         question: str,
@@ -86,13 +112,19 @@ class RAGPipeline:
             system_prompt=DEFAULT_SYSTEM_PROMPT,
         )
 
+        if not answer or not answer.strip():
+            answer = self._extractive_fallback(contexts)
+
         return {
             "answer": answer,
             "sources": contexts,
         }
 
 
-def build_pipeline(provider: BaseLLMProvider, vector_store: BaseVectorStore) -> RAGPipeline:
+def build_pipeline(
+    provider: BaseLLMProvider,
+    vector_store: BaseVectorStore,
+) -> RAGPipeline:
     return RAGPipeline(
         provider=provider,
         vector_store=vector_store,
