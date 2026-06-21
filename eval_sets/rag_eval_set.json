@@ -1,0 +1,26 @@
+[
+  {
+    "id": "eval_001",
+    "question": "Yapay zeka destekli karar destek sistemi nihai karar verir mi?",
+    "expected_sources": ["mevzuat.txt"],
+    "expected_answer_contains": ["nihai karar"],
+    "must_not_contain": ["tek başına kesin karar verir"],
+    "category": "grounded_answer"
+  },
+  {
+    "id": "eval_002",
+    "question": "Kişisel veri içeren dokümanlarda erişim nasıl olmalıdır?",
+    "expected_sources": ["mevzuat.txt"],
+    "expected_answer_contains": ["rol bazlı"],
+    "must_not_contain": [],
+    "category": "access_control"
+  },
+  {
+    "id": "eval_003",
+    "question": "Bu sistem hangi şehirde kurulacaktır?",
+    "expected_sources": [],
+    "expected_answer_contains": ["Dokümanda bu bilgi bulunamadı"],
+    "must_not_contain": ["Ankara", "İstanbul", "Konya"],
+    "category": "no_answer"
+  }
+]

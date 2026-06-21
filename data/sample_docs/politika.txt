@@ -1,0 +1,3 @@
+LLM tabanlı sistemlerde prompt injection riskine karşı kullanıcı girdileri kontrol edilmelidir.
+Üretken yapay zeka sistemlerinde loglama, izleme ve insan onayı gerektiren akışlar tanımlanmalıdır.
+Cloud AI servislerinde token maliyeti, latency ve veri güvenliği birlikte değerlendirilmelidir.

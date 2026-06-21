@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+python-dotenv
+requests
+numpy
+qdrant-client
+openai
+langchain-text-splitters
+python-multipart

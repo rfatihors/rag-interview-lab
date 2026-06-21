@@ -1,0 +1,3 @@
+Kurum içi yapay zeka sistemleri yalnızca yetkili kullanıcılar tarafından kullanılabilir.
+Doküman tabanlı cevap sistemlerinde cevaplar kaynak gösterilerek verilmelidir.
+Eğer dokümanda cevap bulunamıyorsa sistem açıkça "dokümanda bu bilgi bulunamadı" demelidir.
